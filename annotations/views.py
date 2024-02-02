@@ -1,8 +1,9 @@
 from rest_framework import generics, serializers
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, NotFound
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from textblob import TextBlob
+from django.db.models import Avg
 
 from .models import Image, Comment
 from .serializers import ImageSerializer, CommentSerializer
@@ -17,7 +18,17 @@ class ImageListCreateView(generics.ListCreateAPIView):
         if "image" not in self.request.data:
             raise serializers.ValidationError({"image": "This field is required."})
         instance = serializer.save()
-        instance.annotation = mock_annotation_processing()
+        instance.status = "processing"
+        instance.save()
+
+        annotation = mock_annotation_processing()
+        print(f"Annotation: {annotation}")
+        instance.annotation = annotation
+
+        if annotation:
+            instance.status = "success"
+        else:
+            instance.status = "fail"
         instance.save()
 
 
@@ -26,30 +37,47 @@ class ImageDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = ImageSerializer
 
     def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
+        try:
+            instance = self.get_object()
+            serializer = self.get_serializer(instance)
 
-        # Retrieve all comments related to the image
-        comments_queryset = Comment.objects.filter(image=instance)
-        comments_serializer = CommentSerializer(comments_queryset, many=True)
+            # Retrieve all comments related to the image
+            comments_queryset = Comment.objects.filter(image=instance)
+            comments_serializer = CommentSerializer(comments_queryset, many=True)
 
-        sentiment_scores = []
-        for comment in comments_queryset:
-            analysis = TextBlob(comment.text)
-            sentiment_scores.append(analysis.sentiment.polarity)
+            num_users_commented = (
+                Comment.objects.filter(image=instance).values("user").distinct().count()
+            )
+            list_comment_length = [
+                comment.comment_length for comment in comments_queryset
+            ]
+            avg_comment_length = sum(list_comment_length) / len(list_comment_length)
 
-        # Calculate average sentiment score for all comments
-        if sentiment_scores:
-            average_sentiment = sum(sentiment_scores) / len(sentiment_scores)
-        else:
-            average_sentiment = None
+            sentiment_scores = []
+            for comment in comments_queryset:
+                analysis = TextBlob(comment.text)
+                sentiment_scores.append(analysis.sentiment.polarity)
 
-        # Add comments to the serialized data
-        data = serializer.data
-        data["comments"] = comments_serializer.data
-        data["average_sentiment"] = average_sentiment
+            # Calculate average sentiment score for all comments
+            if sentiment_scores:
+                average_sentiment = sum(sentiment_scores) / len(sentiment_scores)
+            else:
+                average_sentiment = None
 
-        return Response(data)
+            image_summary = dict(
+                num_users_comment=num_users_commented,
+                avg_comment_length=avg_comment_length,
+                sentiment=average_sentiment,
+            )
+            # Add comments to the serialized data
+            data = serializer.data
+            data["comments"] = comments_serializer.data
+            # Add summary to the serialized data
+            data["summary"] = image_summary
+
+            return Response(data)
+        except Image.DoesNotExist:
+            raise NotFound("Image not found")
 
 
 class CommentCreateView(generics.CreateAPIView):
