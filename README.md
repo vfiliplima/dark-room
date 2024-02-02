@@ -12,7 +12,7 @@ An Image Annotation Service that allows users to upload images, annotate them, a
   
 ## Getting Started
 
-### Instalation
+### Installation
 
 1. To get started, clone the repository using the following command:
 
