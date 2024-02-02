@@ -11,8 +11,6 @@ To get started, clone the repository using the following command:
 ```bash
 git clone https://github.com/vfiliplima/dark-room.git
 cd image-annotation-service
-
-pip install -r requirements.txt
 ```
 
 Create a virtual environment and activate it:
