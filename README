@@ -1,37 +1,65 @@
-# Your Project Name
+# Image Annotation Service
 
-Brief project description and its purpose.
-
-## Table of Contents
-
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Usage](#usage)
-- [API Documentation](#api-documentation)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
+An Image Annotation Service that allows users to upload images, annotate them, add comments, and get a summary of comments for each image.
 
 ## Getting Started
 
-### Prerequisites
+### Cloning the Repository
 
-List any prerequisites or dependencies that need to be installed before getting started.
+To get started, clone the repository using the following command:
 
-Example:
+```bash
+git clone https://github.com/vfiliplima/dark-room.git
+cd image-annotation-service
 
-- Python 3.6+
-- Django 3.0+
+pip install -r requirements.txt
+```
 
-### Installation
+Create a virtual environment and activate it:
 
-Provide step-by-step instructions on how to install and set up your project.
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows, use: .\venv\Scripts\activate
+```
 
-Example:
+Install the project dependencies:
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/yourproject.git
-   cd yourproject
-   ```
+```bash
+pip install -r requirements.txt
+```
+
+## Usage
+
+Navigate to the project root where the manage.py file is located:
+
+```bash
+cd path/to/image_annotation_service
+```
+
+Apply database migrations:
+
+```bash
+python manage.py makemigrations
+```
+
+```bash
+python manage.py migrate
+```
+
+Create a superuser for admin access:
+
+```bash
+python manage.py createsuperuser
+```
+
+Start the development server:
+
+```bash
+python manage.py runserver
+```
+
+Open 127.0.0.1:8000/admin in your browser to access the admin interface. Use the superuser credentials created earlier.
+
+Create Image entries and add comments to images in the admin interface.
+
+For API documentation, visit 127.0.0.1:8000/api/schema/swagger-ui to explore available endpoints.
