@@ -2,31 +2,38 @@
 
 An Image Annotation Service that allows users to upload images, annotate them, add comments, and get a summary of comments for each image.
 
+## Table of Contents
+- [Getting Started](#getting-started)
+  - [Installation](#installation)
+- [Usage](#usage)
+- [API Documentation](#api-documentation)
+
+  
 ## Getting Started
 
-### Cloning the Repository
+### Instalation
 
-To get started, clone the repository using the following command:
+1. To get started, clone the repository using the following command:
 
 ```bash
 git clone https://github.com/vfiliplima/dark-room.git
 cd image-annotation-service
 ```
 
-Create a virtual environment and activate it:
+2. Create a virtual environment and activate it:
 
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows, use: .\venv\Scripts\activate
 ```
 
-Install the project dependencies:
+3. Install the project dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage
+### Usage
 
 Navigate to the project root where the manage.py file is located:
 
@@ -56,6 +63,7 @@ Start the development server:
 python manage.py runserver
 ```
 
+### Api Documentation
 Open 127.0.0.1:8000/admin in your browser to access the admin interface. Use the superuser credentials created earlier.
 
 Create Image entries and add comments to images in the admin interface.
