@@ -6,6 +6,7 @@ An Image Annotation Service that allows users to upload images, annotate them, a
 - [Getting Started](#getting-started)
   - [Installation](#installation)
 - [Usage](#usage)
+- [Accessing the Admin Interface](#accessing-the-admin-interface)
 - [API Documentation](#api-documentation)
 
   
@@ -63,9 +64,21 @@ Start the development server:
 python manage.py runserver
 ```
 
-### Api Documentation
-Open 127.0.0.1:8000/admin in your browser to access the admin interface. Use the superuser credentials created earlier.
+### Accessing the Admin Interface
 
-Create Image entries and add comments to images in the admin interface.
+1. Open [127.0.0.1:8000/admin](http://127.0.0.1:8000/admin) in your browser.
 
-For API documentation, visit 127.0.0.1:8000/api/schema/swagger-ui to explore available endpoints.
+2. Log in using the superuser credentials created during the setup.
+
+3. In the admin interface, create Image entries and add comments to the images.
+
+
+### API Documentation
+
+For detailed API documentation, follow these steps:
+
+1. Visit [127.0.0.1:8000/api/schema/swagger-ui](http://127.0.0.1:8000/api/schema/swagger-ui) in your browser.
+
+2. The Swagger UI page will display available endpoints, request and response formats, and other relevant information.
+
+3. Explore the API to understand and interact with the provided functionalities.
