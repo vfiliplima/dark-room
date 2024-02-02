@@ -1,0 +1,25 @@
+# Ignore compiled Python files
+*.pyc
+
+# Ignore the virtual environment folder
+venv/
+
+# Ignore Django's migration files
+*/migrations/
+
+# Ignore local settings file
+local_settings.py
+
+# Ignore IDE-specific folders and files
+.vscode/
+.idea/
+
+# Ignore database files
+*.sqlite3
+db.sqlite3
+
+# Ignore log files
+*.log
+
+# Ignore all files in the 'images' directory
+/images/*
