@@ -36,13 +36,13 @@ pip install -r requirements.txt
 
 ### Usage
 
-Navigate to the project root where the manage.py file is located:
+1. Navigate to the project root where the manage.py file is located:
 
 ```bash
 cd path/to/image_annotation_service
 ```
 
-Apply database migrations:
+2. Apply database migrations:
 
 ```bash
 python manage.py makemigrations
@@ -52,13 +52,13 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-Create a superuser for admin access:
+3. Create a superuser for admin access:
 
 ```bash
 python manage.py createsuperuser
 ```
 
-Start the development server:
+4. Start the development server:
 
 ```bash
 python manage.py runserver
