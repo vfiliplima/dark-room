@@ -3,7 +3,6 @@ from rest_framework.exceptions import PermissionDenied, NotFound
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from textblob import TextBlob
-from django.db.models import Avg
 
 from .models import Image, Comment
 from .serializers import ImageSerializer, CommentSerializer
