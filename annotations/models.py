@@ -10,7 +10,7 @@ class Image(models.Model):
         ("fail", "Fail"),
     ]
 
-    image = models.ImageField(upload_to="images/")
+    image = models.ImageField(upload_to="media/images/")
     annotation = models.CharField(max_length=255, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="queued")

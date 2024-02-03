@@ -50,7 +50,10 @@ class ImageDetailView(generics.RetrieveUpdateAPIView):
             list_comment_length = [
                 comment.comment_length for comment in comments_queryset
             ]
-            avg_comment_length = sum(list_comment_length) / len(list_comment_length)
+
+            avg_comment_length = 0
+            if comments_queryset:
+                avg_comment_length = sum(list_comment_length) / len(list_comment_length)
 
             sentiment_scores = []
             for comment in comments_queryset:
