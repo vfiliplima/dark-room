@@ -5,7 +5,12 @@ from rest_framework.response import Response
 from textblob import TextBlob
 
 from .models import Image, Comment
-from .serializers import ImageSerializer, ImageUpdateSerializer, CommentSerializer
+from .serializers import (
+    ImageSerializer,
+    ImageUpdateSerializer,
+    CommentSerializer,
+    CommentCreateSerializer,
+)
 from .annotations_gen import mock_annotation_processing
 
 
@@ -196,7 +201,7 @@ class CommentCreateView(generics.CreateAPIView):
     """
 
     queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+    serializer_class = CommentCreateSerializer
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
