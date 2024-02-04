@@ -10,8 +10,42 @@ from .annotations_gen import mock_annotation_processing
 
 
 class ImageListCreateView(generics.ListCreateAPIView):
+    """
+    Get a list of images and create a new image.
+
+    This endpoint allows users to retrieve a list of images and upload a new image.
+
+    __Returns__: A list of images or a success message for image creation.
+
+    Example to upload a new image:
+    ```
+    POST /images/
+    Headers: {'Content-Type': 'multipart/form-data'}
+    Body: {'image': [uri_string], 'annotation': 'Mountain view', 'user': 1, 'status': 'queued'}
+    ```
+
+    __Note__:
+    - Image creation requires authentication.
+
+    __Status Codes:__
+    - 200 OK: Successful retrieval of the image list.
+    - 201 Created: Image successfully created.
+    - 400 Bad Request: Invalid query parameters or image creation request.
+    - 403 Forbidden: Authentication required for image creation.
+    - 500 Internal Server Error: An unexpected error occurred.
+
+    __Authentication__:
+    - This endpoint requires authentication for image creation.
+
+    __Authorization__:
+    - All authenticated users have access to listing images.
+    - Only authenticated users can create new images.
+
+    """
+
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         if "image" not in self.request.data:
@@ -32,8 +66,48 @@ class ImageListCreateView(generics.ListCreateAPIView):
 
 
 class ImageDetailView(generics.RetrieveUpdateAPIView):
+    """
+    Retrieve or update details of a specific image.
+
+    This endpoint allows users to retrieve details or update information about a specific image.
+
+    __Returns__: Details of the requested image, including associated comments and summary.
+
+    Example to retrieve details of an image:
+    ```
+    GET /images/{image_id}/
+    ```
+
+    Example to update details of an image:
+    ```
+    PUT /images/{image_id}/
+    Headers: {'Content-Type': 'multipart/form-data'}
+    Body: {'image': [new_uri_string], 'annotation': 'Updated annotation'}
+    ```
+
+    __Note__:
+    - Image updates require authentication.
+    - Only the owner of the image can update its details.
+
+    __Status Codes:__
+    - 200 OK: Successful retrieval or update of the image details.
+    - 400 Bad Request: Invalid query parameters or update request.
+    - 403 Forbidden: Authentication required for image updates.
+    - 404 Not Found: The requested image does not exist.
+    - 500 Internal Server Error: An unexpected error occurred.
+
+    __Authentication__:
+    - This endpoint requires authentication for image updates.
+
+    __Authorization__:
+    - All authenticated users can retrieve details of any image.
+    - Only the owner of the image can update its details.
+
+    """
+
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
+    permission_classes = [IsAuthenticated]
 
     def retrieve(self, request, *args, **kwargs):
         try:
@@ -83,6 +157,35 @@ class ImageDetailView(generics.RetrieveUpdateAPIView):
 
 
 class CommentCreateView(generics.CreateAPIView):
+    """
+    Create a new comment for a specific image.
+
+    This endpoint allows users to create a new comment for a specific image.
+
+    Example to create a new comment:
+    ```
+    POST /images/{image_id}/comments/
+    Body: {'text': 'Great shot!'}
+    ```
+
+    __Note__:
+    - Comment creation requires authentication.
+
+    __Status Codes:__
+    - 201 Created: Comment successfully created.
+    - 400 Bad Request: Invalid comment creation request.
+    - 403 Forbidden: Authentication required for comment creation.
+    - 404 Not Found: The associated image does not exist.
+    - 500 Internal Server Error: An unexpected error occurred.
+
+    __Authentication__:
+    - This endpoint requires authentication for comment creation.
+
+    __Authorization__:
+    - All authenticated users can create comments.
+
+    """
+
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated]
@@ -94,6 +197,34 @@ class CommentCreateView(generics.CreateAPIView):
 
 
 class UserImagesListView(generics.ListAPIView):
+    """
+    Get a list of images uploaded by the authenticated user.
+
+    This endpoint allows users to retrieve a list of images uploaded by the authenticated user.
+
+    __Returns__: A list of images uploaded by the authenticated user.
+
+    Example:
+    ```
+    GET /user/images/
+    ```
+
+    __Note__:
+    - Image retrieval requires authentication.
+
+    __Status Codes:__
+    - 200 OK: Successful retrieval of the user's image list.
+    - 403 Forbidden: Authentication required for image retrieval.
+    - 500 Internal Server Error: An unexpected error occurred.
+
+    __Authentication__:
+    - This endpoint requires authentication for image retrieval.
+
+    __Authorization__:
+    - All authenticated users can retrieve their own image list.
+
+    """
+
     serializer_class = ImageSerializer
     permission_classes = [IsAuthenticated]
 
@@ -103,6 +234,36 @@ class UserImagesListView(generics.ListAPIView):
 
 
 class ImageDeleteView(generics.DestroyAPIView):
+    """
+    Delete an image.
+
+    This endpoint allows the owner of an image to delete it.
+
+    __Returns__: A success message for image deletion.
+
+    Example:
+    ```
+    DELETE /images/{image_id}/
+    ```
+
+    __Note__:
+    - Image deletion requires authentication and ownership.
+
+    __Status Codes:__
+    - 204 No Content: Image successfully deleted.
+    - 401 Unauthorized: Authentication credentials were not provided.
+    - 403 Forbidden: You do not have permission to delete this image.
+    - 404 Not Found: Image not found.
+    - 500 Internal Server Error: An unexpected error occurred.
+
+    __Authentication__:
+    - This endpoint requires authentication for image deletion.
+
+    __Authorization__:
+    - The requesting user must be the owner of the image to delete it.
+
+    """
+
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
     permission_classes = [IsAuthenticated]
@@ -119,6 +280,36 @@ class ImageDeleteView(generics.DestroyAPIView):
 
 
 class CommentDeleteView(generics.DestroyAPIView):
+    """
+    Delete a comment.
+
+    This endpoint allows the owner of a comment to delete it.
+
+    __Returns__: A success message for comment deletion.
+
+    Example:
+    ```
+    DELETE /comments/{comment_id}/
+    ```
+
+    __Note__:
+    - Comment deletion requires authentication and ownership.
+
+    __Status Codes:__
+    - 204 No Content: Comment successfully deleted.
+    - 401 Unauthorized: Authentication credentials were not provided.
+    - 403 Forbidden: You do not have permission to delete this comment.
+    - 404 Not Found: Comment not found.
+    - 500 Internal Server Error: An unexpected error occurred.
+
+    __Authentication__:
+    - This endpoint requires authentication for comment deletion.
+
+    __Authorization__:
+    - The requesting user must be the owner of the comment to delete it.
+
+    """
+
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated]
@@ -135,6 +326,35 @@ class CommentDeleteView(generics.DestroyAPIView):
 
 
 class AdminImageDeleteView(generics.DestroyAPIView):
+    """
+    Delete an image as an admin.
+
+    This endpoint allows an admin user to delete any image.
+
+    __Returns__: A success message for image deletion.
+
+    Example:
+    ```
+    DELETE /admin/images/{image_id}/
+    ```
+
+    __Note__:
+    - Image deletion by admin requires admin authentication.
+
+    __Status Codes:__
+    - 204 No Content: Image successfully deleted.
+    - 401 Unauthorized: Admin authentication credentials were not provided.
+    - 404 Not Found: Image not found.
+    - 500 Internal Server Error: An unexpected error occurred.
+
+    __Authentication__:
+    - This endpoint requires admin authentication for image deletion.
+
+    __Authorization__:
+    - Admin users have the authority to delete any image.
+
+    """
+
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
     permission_classes = [IsAdminUser]  # Only admin users can delete images

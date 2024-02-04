@@ -50,7 +50,7 @@ urlpatterns = [
         CommentDeleteView.as_view(),
         name="comment-delete",
     ),
-    path("my-images/", UserImagesListView.as_view(), name="user-images-list"),
+    path("user/images/", UserImagesListView.as_view(), name="user-images-list"),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
         "api/schema/swagger-ui/",
