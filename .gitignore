@@ -21,5 +21,8 @@ db.sqlite3
 # Ignore log files
 *.log
 
-# Ignore all files in the 'images' directory
-/images/*
+# Ignore all files in the 'media' directory
+/media/*
+
+# Ignore DS_Store file
+.DS_Store
