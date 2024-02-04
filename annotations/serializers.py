@@ -10,7 +10,13 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ImageUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Image
+        fields = ["status", "annotation"]
+
+
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = "__all__"
+        fields = ["text"]

@@ -38,7 +38,9 @@ urlpatterns = [
     path("images/<int:pk>/", ImageDetailView.as_view(), name="image-detail"),
     path("images/<int:pk>", AdminImageDeleteView.as_view(), name="image-delete"),
     path(
-        "images/<int:pk>/comments/", CommentCreateView.as_view(), name="comment-create"
+        "images/<int:image_id>/comments/",
+        CommentCreateView.as_view(),
+        name="comment-create",
     ),
     path(
         "images/<int:image_id>/delete/",

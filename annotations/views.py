@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from textblob import TextBlob
 
 from .models import Image, Comment
-from .serializers import ImageSerializer, CommentSerializer
+from .serializers import ImageSerializer, ImageUpdateSerializer, CommentSerializer
 from .annotations_gen import mock_annotation_processing
 
 
@@ -55,7 +55,6 @@ class ImageListCreateView(generics.ListCreateAPIView):
         instance.save()
 
         annotation = mock_annotation_processing()
-        print(f"Annotation: {annotation}")
         instance.annotation = annotation
 
         if annotation:
@@ -106,7 +105,7 @@ class ImageDetailView(generics.RetrieveUpdateAPIView):
     """
 
     queryset = Image.objects.all()
-    serializer_class = ImageSerializer
+    serializer_class = ImageUpdateSerializer
     permission_classes = [IsAuthenticated]
 
     def retrieve(self, request, *args, **kwargs):
@@ -154,6 +153,16 @@ class ImageDetailView(generics.RetrieveUpdateAPIView):
             return Response(data)
         except Image.DoesNotExist:
             raise NotFound("Image not found")
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        if self.request.user == instance.user:
+            self.perform_update(serializer)
+            return Response(serializer.data)
+        else:
+            raise PermissionDenied("You do not have permission to update this image.")
 
 
 class CommentCreateView(generics.CreateAPIView):
