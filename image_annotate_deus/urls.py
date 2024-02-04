@@ -17,7 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from annotations.views import (
-    ImageListCreateView,
+    ImageListView,
+    ImageCreateView,
     ImageDetailView,
     CommentCreateView,
     UserImagesListView,
@@ -34,7 +35,8 @@ from drf_spectacular.views import (
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("images/", ImageListCreateView.as_view(), name="image-list-create"),
+    path("images/", ImageListView.as_view(), name="image-list"),
+    path("images/", ImageCreateView.as_view(), name="image-create"),
     path("images/<int:pk>/", ImageDetailView.as_view(), name="image-detail"),
     path("images/<int:pk>", AdminImageDeleteView.as_view(), name="image-delete"),
     path(

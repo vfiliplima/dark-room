@@ -7,14 +7,14 @@ from textblob import TextBlob
 from .models import Image, Comment
 from .serializers import (
     ImageSerializer,
+    ImageCreateSerializer,
     ImageUpdateSerializer,
     CommentSerializer,
     CommentCreateSerializer,
 )
-from .annotations_gen import mock_annotation_processing
 
 
-class ImageListCreateView(generics.ListCreateAPIView):
+class ImageListView(generics.ListAPIView):
     """
     Get a list of images and create a new image.
 
@@ -26,7 +26,7 @@ class ImageListCreateView(generics.ListCreateAPIView):
     ```
     POST /images/
     Headers: {'Content-Type': 'multipart/form-data'}
-    Body: {'image': [uri_string], 'annotation': 'Mountain view', 'user': 1, 'status': 'queued'}
+    Body: {'image': [uri_string]}
     ```
 
     __Note__:
@@ -52,20 +52,15 @@ class ImageListCreateView(generics.ListCreateAPIView):
     serializer_class = ImageSerializer
     permission_classes = [IsAuthenticated]
 
+
+class ImageCreateView(generics.CreateAPIView):
+    serializer_class = ImageCreateSerializer
+    permission_classes = [IsAuthenticated]
+
     def perform_create(self, serializer):
         if "image" not in self.request.data:
             raise serializers.ValidationError({"image": "This field is required."})
         instance = serializer.save()
-        instance.status = "processing"
-        instance.save()
-
-        annotation = mock_annotation_processing()
-        instance.annotation = annotation
-
-        if annotation:
-            instance.status = "success"
-        else:
-            instance.status = "fail"
         instance.save()
 
 

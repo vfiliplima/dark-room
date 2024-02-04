@@ -10,6 +10,12 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ImageCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Image
+        fields = ["image"]
+
+
 class ImageUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image

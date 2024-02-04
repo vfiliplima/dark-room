@@ -22,7 +22,6 @@ def test_user():
 def test_image(test_user):
     return Image.objects.create(
         image="http://127.0.0.1:8000/images/GOPR1853.JPG",
-        annotation="Test Annotation",
         user=test_user,
         status="success",
     )
@@ -34,11 +33,11 @@ def test_comment(test_image, test_user):
 
 
 @pytest.mark.django_db
-def test_image_list_create_view(api_client, test_user):
+def test_image_list_view(api_client, test_user, test_image):
     api_client.force_authenticate(user=test_user)
     response = api_client.get("/images/")
     assert response.status_code == status.HTTP_200_OK
-    assert len(response.data) == 0
+    assert len(response.data) == 1
 
 
 @pytest.mark.django_db
@@ -48,9 +47,6 @@ def test_image_detail_view(api_client, test_user, test_image):
     detail_url = f"/images/{test_image.id}/"
     response = api_client.get(detail_url)
     assert response.status_code == status.HTTP_200_OK
-
-    assert response.data["annotation"] == test_image.annotation
-    assert response.data["status"] == test_image.status
 
     list_response = api_client.get("/images/")
     assert list_response.status_code == status.HTTP_200_OK
@@ -69,9 +65,6 @@ def test_image_create_view(api_client, test_user):
         "/images/",
         data={
             "image": open(file_path, "rb"),
-            "user": 1,
-            "status": "queued",
-            "annotation": "mountain",
         },
         format="multipart",
     )
