@@ -11,15 +11,11 @@ class ImageSerializer(serializers.ModelSerializer):
 
 
 class ImageCreateSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(required=True)
+
     class Meta:
         model = Image
         fields = ["image"]
-
-
-class ImageUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Image
-        fields = ["status", "annotation"]
 
 
 class CommentSerializer(serializers.ModelSerializer):

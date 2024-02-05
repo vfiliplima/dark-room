@@ -36,9 +36,13 @@ from drf_spectacular.views import (
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("images/", ImageListView.as_view(), name="image-list"),
-    path("images/", ImageCreateView.as_view(), name="image-create"),
+    path("images/create/", ImageCreateView.as_view(), name="image-create"),
     path("images/<int:pk>/", ImageDetailView.as_view(), name="image-detail"),
-    path("images/<int:pk>", AdminImageDeleteView.as_view(), name="image-delete"),
+    path(
+        "images/<int:image_id>/admin/",
+        AdminImageDeleteView.as_view(),
+        name="image-delete",
+    ),
     path(
         "images/<int:image_id>/comments/",
         CommentCreateView.as_view(),

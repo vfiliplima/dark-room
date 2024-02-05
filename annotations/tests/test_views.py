@@ -23,7 +23,6 @@ def test_image(test_user):
     return Image.objects.create(
         image="http://127.0.0.1:8000/images/GOPR1853.JPG",
         user=test_user,
-        status="success",
     )
 
 
@@ -62,7 +61,7 @@ def test_image_create_view(api_client, test_user):
     file_path = os.path.join(settings.MEDIA_ROOT, "images", file_name)
 
     response = api_client.post(
-        "/images/",
+        "/images/create/",
         data={
             "image": open(file_path, "rb"),
         },
@@ -72,20 +71,20 @@ def test_image_create_view(api_client, test_user):
 
 
 @pytest.mark.django_db
-def test_image_update_view(api_client, test_user, test_image):
+def test_image_delete_view(api_client, test_user, test_image):
     api_client.force_authenticate(test_user)
-    image_detail_url = f"/images/{test_image.id}/"
+    image_detail_url = f"/images/{test_image.id}/delete/"
 
-    response = api_client.patch(image_detail_url, data={"status": "processing"})
+    response = api_client.delete(image_detail_url)
 
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == status.HTTP_204_NO_CONTENT
 
 
 @pytest.mark.django_db
 def test_image_update_view_unauthenticated(api_client, test_image):
-    image_detail_url = f"/images/{test_image.id}/"
+    image_detail_url = f"/images/{test_image.id}/delete/"
 
-    response = api_client.patch(image_detail_url, data={"status": "fail"})
+    response = api_client.delete(image_detail_url)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     assert "Authentication credentials were not provided" in str(response.content)

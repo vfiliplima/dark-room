@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 import random
 import time
-from django.db.models.signals import m2m_changed
+from django.db.models.signals import m2m_changed, post_save
 from django.dispatch import receiver
 
 
@@ -53,6 +53,12 @@ class Image(models.Model):
             annotation=random_annotation[0]
         )
         self.annotation.add(annotation_obj)
+
+
+@receiver(post_save, sender=Image)
+def annotate_image(instance, **kwargs):
+
+    instance.add_random_annotation()
 
 
 @receiver(m2m_changed, sender=Image.annotation.through)

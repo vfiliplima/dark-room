@@ -8,7 +8,6 @@ from .models import Image, Comment
 from .serializers import (
     ImageSerializer,
     ImageCreateSerializer,
-    ImageUpdateSerializer,
     CommentSerializer,
     CommentCreateSerializer,
 )
@@ -16,31 +15,17 @@ from .serializers import (
 
 class ImageListView(generics.ListAPIView):
     """
-    Get a list of images and create a new image.
+    Get a list of images.
 
-    This endpoint allows users to retrieve a list of images and upload a new image.
+    This endpoint allows users to retrieve a list of images.
 
-    __Returns__: A list of images or a success message for image creation.
+    __Returns__: A list of images.
 
-    Example to upload a new image:
-    ```
-    POST /images/
-    Headers: {'Content-Type': 'multipart/form-data'}
-    Body: {'image': [uri_string]}
-    ```
-
-    __Note__:
-    - Image creation requires authentication.
 
     __Status Codes:__
     - 200 OK: Successful retrieval of the image list.
-    - 201 Created: Image successfully created.
-    - 400 Bad Request: Invalid query parameters or image creation request.
     - 403 Forbidden: Authentication required for image creation.
     - 500 Internal Server Error: An unexpected error occurred.
-
-    __Authentication__:
-    - This endpoint requires authentication for image creation.
 
     __Authorization__:
     - All authenticated users have access to listing images.
@@ -54,6 +39,33 @@ class ImageListView(generics.ListAPIView):
 
 
 class ImageCreateView(generics.CreateAPIView):
+    """
+    Create a new image.
+
+    This endpoint allows authenticated users to upload and create a new image.
+
+    __Request Example__:
+    ```
+    POST /images/
+    Headers: {'Authorization': 'Token <your_token>', 'Content-Type': 'multipart/form-data'}
+    Body: {'image': [file]}
+    ```
+
+    __Returns__: A success message or error details.
+
+
+    __Status Codes:__
+    - 201 Created: Image successfully created.
+    - 400 Bad Request: Invalid request parameters or missing image file.
+    - 403 Forbidden: Authentication required.
+    - 500 Internal Server Error: An unexpected error occurred.
+
+    __Authorization__:
+    - Only authenticated users can create new images.
+
+    """
+
+    queryset = Image.objects.all()
     serializer_class = ImageCreateSerializer
     permission_classes = [IsAuthenticated]
 
@@ -64,7 +76,7 @@ class ImageCreateView(generics.CreateAPIView):
         instance.save()
 
 
-class ImageDetailView(generics.RetrieveUpdateAPIView):
+class ImageDetailView(generics.RetrieveAPIView):
     """
     Retrieve or update details of a specific image.
 
@@ -105,7 +117,7 @@ class ImageDetailView(generics.RetrieveUpdateAPIView):
     """
 
     queryset = Image.objects.all()
-    serializer_class = ImageUpdateSerializer
+    serializer_class = ImageSerializer
     permission_classes = [IsAuthenticated]
 
     def retrieve(self, request, *args, **kwargs):
@@ -153,16 +165,6 @@ class ImageDetailView(generics.RetrieveUpdateAPIView):
             return Response(data)
         except Image.DoesNotExist:
             raise NotFound("Image not found")
-
-    def partial_update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        if self.request.user == instance.user:
-            self.perform_update(serializer)
-            return Response(serializer.data)
-        else:
-            raise PermissionDenied("You do not have permission to update this image.")
 
 
 class CommentCreateView(generics.CreateAPIView):
