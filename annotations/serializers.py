@@ -15,7 +15,7 @@ class ImageCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Image
-        fields = ["image"]
+        fields = ["image", "user"]
 
 
 class CommentSerializer(serializers.ModelSerializer):
