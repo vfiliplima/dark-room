@@ -1,0 +1,11 @@
+# sample.yaml
+person:
+  name: John Doe
+  age: 30
+  address:
+    street: 123 Main St
+    city: New York
+    zip: 10001
+  phones:
+    - home: 123-456-7890
+    - work: 987-654-3210
